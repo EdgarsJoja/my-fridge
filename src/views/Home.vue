@@ -1,6 +1,26 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
+    <PrimeToolbar>
+      <template #left>
+        <PrimeButton
+          label="Open Fridge"
+          @click="$router.push({ name: 'fridge' })"
+        />
+      </template>
+
+      <template #right>
+        <PrimeButton
+          label="Export"
+          icon="pi pi-download"
+          class="p-button-secondary mr-2"
+        />
+        <PrimeButton
+          label="Import"
+          icon="pi pi-upload"
+          class="p-button-secondary"
+        />
+      </template>
+    </PrimeToolbar>
   </div>
 </template>
 
