@@ -22,6 +22,7 @@
 import { Options, Vue, setup } from 'vue-class-component';
 import { getItems, ItemInterface } from '../api/itemsManager';
 import { formatDate } from '../composables/dateFormatter';
+import { sortByExpirationDate } from '../composables/itemSorter';
 import ExpirationTag from '../components/ExpirationTag.vue';
 
 @Options({
@@ -31,12 +32,13 @@ import ExpirationTag from '../components/ExpirationTag.vue';
 })
 export default class ItemsList extends Vue {
   context = setup(() => {
-    const items: ItemInterface[] = getItems();
+    const items: ItemInterface[] = sortByExpirationDate(getItems());
 
     return {
       items,
       getItems,
       formatDate,
+      sortByExpirationDate,
     };
   });
 }
