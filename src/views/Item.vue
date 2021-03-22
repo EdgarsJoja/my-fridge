@@ -14,6 +14,7 @@
         <PrimeCalendar
           id="expiration_date"
           :showIcon="true"
+          dateFormat="dd-mm-yy"
           v-model="form.expirationDate"
         />
       </div>
@@ -34,6 +35,7 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import ViewContent from '../components/ViewContent.vue';
+import { saveItem } from '../api/itemsManager';
 
 @Options({
   components: {
@@ -53,7 +55,12 @@ export default class Item extends Vue {
   }
 
   public save() {
-    console.log(this.itemId);
+    saveItem({
+      id: 0,
+      name: this.form.name,
+      expirationDate: this.form.expirationDate
+    });
+    this.$router.push('fridge');
   }
 
   created() {
