@@ -1,7 +1,8 @@
 import { getData, saveData } from './dataManager';
+import { generateRandomString } from '../utils/randomGenerator';
 
 interface ItemInterface {
-  id?: number;
+  id?: string;
   name: string;
   expirationDate: string;
 }
@@ -15,11 +16,8 @@ const getItems = (): ItemInterface[] => {
 
 const saveItem = (item: ItemInterface): void => {
   const items = getItems();
-  const idsSum = items.reduce((acc, item) => {
-    return acc + item.id!;
-  }, 0);
 
-  item.id = items.length === 1 ? idsSum + 1 : idsSum;
+  item.id = generateRandomString();
 
   items.push(item);
   saveData(storageKey, JSON.stringify(items));

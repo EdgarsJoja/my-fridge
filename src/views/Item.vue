@@ -56,7 +56,6 @@ export default class Item extends Vue {
 
   public save() {
     saveItem({
-      id: 0,
       name: this.form.name,
       expirationDate: this.form.expirationDate
     });
