@@ -1,14 +1,22 @@
 <template>
   <div class="items-list">
+    <div class="controls mb-8">
+      <div class="search p-fluid">
+        <span class="p-input-icon-right">
+          <PrimeInputText type="text" v-model="search" />
+          <i class="pi pi-search" />
+        </span>
+      </div>
+    </div>
     <ul>
       <li
-        v-for="item in context.items"
+        v-for="item in items"
         :key="item.id"
         class="text-gray-50 p-4 shadow-md rounded-lg mb-4 flex justify-between"
       >
         <div>
           <div class="text-2xl">{{ item.name }}</div>
-          {{ context.formatDate(new Date(item.expirationDate)) }}
+          {{ formatDate(new Date(item.expirationDate)) }}
         </div>
         <div>
           <expiration-tag :expirationDate="new Date(item.expirationDate)" />
@@ -19,27 +27,44 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue, setup } from 'vue-class-component';
 import { getItems, ItemInterface } from '../api/itemsManager';
 import { formatDate } from '../composables/dateFormatter';
 import { sortByExpirationDate } from '../composables/itemSorter';
 import ExpirationTag from '../components/ExpirationTag.vue';
+import { defineComponent } from '@vue/runtime-core';
+import { searchFilter } from '@/composables/itemFilters';
 
-@Options({
+export default defineComponent({
   components: {
-    ExpirationTag,
+    'expiration-tag': ExpirationTag,
   },
-})
-export default class ItemsList extends Vue {
-  context = setup(() => {
-    const items: ItemInterface[] = sortByExpirationDate(getItems());
+  data() {
+    return {
+      search: '',
+    };
+  },
+  setup() {
+    // @todo: Make this property readonly.
+    const allItems: ItemInterface[] = sortByExpirationDate(getItems());
+    const items: ItemInterface[] = allItems;
 
     return {
+      allItems,
       items,
       getItems,
       formatDate,
       sortByExpirationDate,
+      searchFilter
     };
-  });
-}
+  },
+  watch: {
+    search(newValue) {
+      if (newValue) {
+        this.items = searchFilter(this.items, newValue);
+      } else {
+        this.items = this.allItems;
+      }
+    }
+  }
+});
 </script>

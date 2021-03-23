@@ -1,7 +1,7 @@
 <template>
   <ViewContent>
     <template v-slot:header>{{ title }}</template>
-    <div class="p-input-filled p-fluid mb-4">
+    <div class="p-fluid mb-4">
       <div class="p-field mb-4">
         <label for="name" class="text-gray-50">Name</label>
         <PrimeInputText id="name" type="text" v-model="form.name" />
@@ -36,6 +36,7 @@
 import { Options, Vue } from 'vue-class-component';
 import ViewContent from '../components/ViewContent.vue';
 import { saveItem } from '../api/itemsManager';
+import { validateSave } from '../composables/itemValidator';
 
 @Options({
   components: {
@@ -55,11 +56,15 @@ export default class Item extends Vue {
   }
 
   public save() {
-    saveItem({
-      name: this.form.name,
-      expirationDate: this.form.expirationDate
-    });
-    this.$router.push('fridge');
+    const newItem = {
+        name: this.form.name,
+        expirationDate: this.form.expirationDate,
+    };
+
+    if (validateSave(newItem)) {
+      saveItem(newItem);
+      this.$router.push('fridge');
+    }
   }
 
   created() {
